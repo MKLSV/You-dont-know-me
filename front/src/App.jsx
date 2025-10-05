@@ -4,6 +4,7 @@ import Login from "./cmps/Login";
 import WaitRoom from "./cmps/WaitRoom";
 import List from "./cmps/List";
 import Game from "./cmps/Game";
+import Loader from "./cmps/Loader";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -12,9 +13,13 @@ function App() {
   const [count, setCount] = useState(4);
   const [players, setPlayers] = useState([]);
   const [currentStory, setCurrentStory] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    socket.on("connect", () => console.log("connected", socket.id));
+    socket.on("connect", () => {
+      setLoading(false)
+      console.log("connected", socket.id)
+    });
 
     socket.on("room_joined", ({ roomId, players }) => {
       setPlayers(players);
@@ -73,30 +78,35 @@ function App() {
   return (
     <div className="app">
       <div className="header"><span>You Dont Know Me</span></div>
-      <div className="app-container">
-        {!user ? (
-          <Login setUser={setUser} />
-        ) : !closeRoom ? (
-          <WaitRoom
-            user={user}
-            setCloseRoom={setCloseRoom}
-            setPlayers={setPlayers}
-            setCount={setCount}
-            count={count}
-            players={players}
-          />
-        ) : currentStory == null && playersReady == false ? (
-          <List
-            count={count}
-            user={user}
-            setUser={setUser}
-            players={players}
-            setPlayersReady={setPlayersReady}
-          />
-        ) : (
-          <Game user={user} players={players} currentStory={currentStory} setCurrentStory={setCurrentStory} />
-        )}
+      {loading ? <div className="loading">
+        <Loader />
       </div>
+        :
+        <div className="app-container">
+          {!user ? (
+            <Login setUser={setUser} />
+          ) : !closeRoom ? (
+            <WaitRoom
+              user={user}
+              setCloseRoom={setCloseRoom}
+              setPlayers={setPlayers}
+              setCount={setCount}
+              count={count}
+              players={players}
+            />
+          ) : currentStory == null && playersReady == false ? (
+            <List
+              count={count}
+              user={user}
+              setUser={setUser}
+              players={players}
+              setPlayersReady={setPlayersReady}
+            />
+          ) : (
+            <Game user={user} players={players} currentStory={currentStory} setCurrentStory={setCurrentStory} />
+          )}
+        </div>
+      }
     </div>
   );
 }
