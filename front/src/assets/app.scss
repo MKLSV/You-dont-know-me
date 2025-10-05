@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color: #93c4cc;
+}
+
+.app-container {
+  height: calc(100vh - 50px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+button {
+        width: 70%;
+        padding: 10px;
+        border-radius: 13px;
+        background-color: #5aa8b4;
+        color: white;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        &:hover {
+          background-color: #3e7179;
+        }
+      }
