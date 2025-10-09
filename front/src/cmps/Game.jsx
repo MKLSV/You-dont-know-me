@@ -55,8 +55,7 @@ export default function Game({ user, players, currentStory, setCurrentStory }) {
   }
 
   function handleContinue() {
-    socket.emit("ready_for_next", { roomId: user.room });
-    setShowContinue(false);
+    socket.emit("ready_for_next", { roomId: user.room })
   }
 
   if (roundResult && showContinue) {
@@ -64,20 +63,25 @@ export default function Game({ user, players, currentStory, setCurrentStory }) {
     const myAnswer = roundResult.answers.find(a => a.chooserId === user.id);
     const myScore = roundResult.scores.find(s => s.id === user.id)?.score || 0;
     const guessed = myAnswer ? myAnswer.correct : false;
-
+    console.log(roundResult.scores)
 
     return (
       <div className="waiting">
-        <h2>Результаты раунда</h2>
+        {isMyStory ?
+          <>
+            <h2>Я то знаю что это ты 👀</h2>
+
+          </> :
+          <>
+            <h2>{guessed ? "✅ Ты угадал!" : "❌ Ты не угадал"} </h2>
+            <p>Это - 
+              {players.find(p => p.id === roundResult.ownerId)?.name || "Неизвестно"}</p>
+          </>
+        }
+
         <p>
-          История принадлежала:{currentStory.ownerId}
-          {players.find(p => p.id === roundResult.ownerId)?.name || "Неизвестно"}
-        </p>
-        <p>
-          {guessed ? "✅ Ты угадал!" : "❌ Ты не угадал"} <br />
           Твои очки: {myScore}
         </p>
-
         <h3>Очки игроков:</h3>
         <ul>
           {roundResult.scores.map(s => (
